@@ -17,7 +17,13 @@ export async function GET() {
 
     const decoded = jwt.verify(token, SECRET_KEY) as { username: string };
 
-    const result = await db.query("SELECT * FROM users WHERE username = $1", [decoded.username]);
+    const result = await db.query(
+      "SELECT user_id, username, fpr, approver, hod FROM users WHERE username = $1",
+      [decoded.username]
+    );
+    
+    
+    console.log("Database Response:", result.rows[0]);
 
     if (result.rows.length === 0) {
       return NextResponse.json({ error: "User not found" }, { status: 401 });
